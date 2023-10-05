@@ -22,3 +22,19 @@ def proba_tran(v1,v2):
     pun = lib.val_escal((1/norm,0),prob)[0]
     pun = (round(pun[0],2),round(pun[1],2))
     return pun
+def varianza(observable, K):
+    Ket_aux = []
+    for index in range(len(K)):
+        aux = [K[index]]
+        Ket_aux += [aux]
+    Bra = lib.conjumat(Ket_aux)
+    med = media(observable, K)
+    id_med = [[(0, 0) for j in range(len(observable[0]))] for i in range(len(observable))]
+    for i in range(len(observable)):
+        for j in range(len(observable[i])):
+            if i == j:
+                id_med[i][j] = libreria.multicplx((-1, 0), med)
+    id_med = lib.sumamatcplx(id_med, observable)
+    cudrado = lib.mult_matrices(id_med, id_med)
+    action = lib.accionmat(cudrado, Ket_aux)
+    return lib.val_ine(action, Bra)
