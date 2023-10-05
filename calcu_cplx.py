@@ -61,6 +61,21 @@ def fasecplx(c1):
     parteI = c1[1]
     fase = math.atan2(parteI,parteR)
     return fase
+    
+def verificar_longitud(v1, v2):
+    if len(v1) == len(v2):
+        return True
+    else:
+        return False
+
+def mat_diagonal(m):
+    mI = [[(0, 0) for j in range(m)] for i in range(m)]
+    for i in range(m):
+        for j in range(m):
+            if i == j:
+                mI[i][j] = (1, 0)
+    return mI
+
 
 def sumaveccplx(c1,c2):
     """Adición de vectores complejos"""
@@ -272,5 +287,124 @@ def is_bolean(matriz):
                 if (matriz[i][j] != 1):
                     return False
     return True
+def vector_anadir(v1, v2):
+    if verificar_longitud(v1, v2):
+        m = []
+        for index in range(len(v1)):
+            m += [suma_complex(v1[index], v2[index])]
+        return m
+    else:
+        return 'Error: Different length vector'
 
+def v_inv_add(v1):
+    m = []
+    for index in range(len(v1)):
+        m += [resta_complex(v1[index], v1[index])]
+    return m
 
+def valor_escalar(sc, v1):
+    m = []
+    for index in range(len(v1)):
+        m += [umlti_complex(sc, v1[index])]
+    return m
+def m_inv_add(m1):
+    m = []
+    for row in range(len(m1)):
+        m += [v_inv_add(m1[row])]
+    return m
+
+def m_scalar(sc, m1):
+    m = []
+    for row in range(len(m1)):
+        m += [valor_escalar(sc, m1[row])]
+    return m
+
+def at_transicion(m1):
+    m = [[(0, 0) for i in range(len(m1))] for j in range(len(m1[0]))]
+    for i in range(len(m1)):
+        for j in range(len(m1[0])):
+            m[j][i] = m1[i][j]
+    return m
+
+def matrix_daga(m1):
+    m2 = [[m1[i][j] for j in range(len(m1[0]))] for i in range(len(m1))]
+    m2 = conjugar_matrix(m2)
+    m2 = at_transicion(m2)
+    return m2
+
+def mult_matrices(m1, m2):
+    if len(m1[0]) == len(m2):
+        m = [[(0, 0) for i in range(len(m2[0]))] for j in range(len(m1))]
+        for row in range(len(m1)):
+            for column in range(len(m2[0])):
+                for aux in range(len(m1[0])):
+                    m[row][column] = suma_complex(m[row][column], umlti_complex(m1[row][aux], m2[aux][column]))
+        return m
+    else:
+        return "Length error"
+        
+def val_ine(v1, v2):
+    point = (0, 0)
+    if verificar_longitud(v1, v2):
+        for index in range(len(v1)):
+            aux = umlti_complex(v1[index], v2[index])
+            point = suma_complex(point, aux)
+        return point
+    else:
+        return "Length error"
+        
+def val_vect(observable):
+    valores, vectores = np.linalg.eig(observable)
+    lista_valores = []
+    lista_vectores = []
+    for index in range(len(valores)):
+        lista_valores += [(valores[index].real, valores[index].imag)]
+    for index in range(len(vectores)):
+        vector = []
+        for index_2 in range(len(vectores[0])):
+            vector += [(vectores[index][index_2].real, vectores[index][index_2].imag)]
+        lista_vectores += [vector]
+    return lista_valores, lista_vectores
+
+def val_prop_mat_numpy(mat):
+    valores_propios, vectores_propios = np.linalg.eig(mat)
+    return valores_propios#"los valores propios para esta matriz o vector son {} y los vectores son {}".format(valores_propios, vectores_propios)
+
+def vec_prop_mat_numpy(mat):
+    valores_propios, vectores_propios = np.linalg.eig(mat)
+    return vectores_propios#"los valores propios para esta matriz o vector son {} y los vectores son {}".format(valores_propios, vectores_propios)
+
+def varianza(mat1,mat2):
+    mat1 = np.matrix(mat1)
+    mat2 = np.matrix(mat2)
+    landa1 = mat1-mat2
+    rest = val_prop_mat_numpy(landa1)
+    product = np.dot(rest, rest)
+    return product
+
+def transicion(v1,v2):
+    b = cal.produc_interno_vec(v2,v1)
+    b = b/(cal.normal(v1)*cal.normal(v2))
+    prob = cal.module_vector(b)
+    return prob
+
+def media(matrix,ket):
+    if cal.normal(ket) != 1:
+        ket = cal.normalizar_vector(ket)
+    resp = cal.mat_hermitiana(matrix)
+    if resp == "La madrix no es hermitiana" or resp == "Error, el tamaño de matrix es incorrrecto":
+        return resp
+    else:
+        med = cal.produc_interno_vec(cal.accion_mat(matrix,ket),ket)
+        return med.real
+
+def transitar_a_vectores(mat,ket):
+    if cal.normalizar_vector(ket) != 1:
+        ket = cal.normalizar_vector(ket)
+    vectores = vec_prop_mat_numpy(mat)
+    valores = val_prop_mat_numpy(mat)
+    prob = []
+    for i in range(len(vectores)):
+        proba = transicion(ket,vectores[i])
+        prob.append(proba)
+    return prob
