@@ -53,9 +53,9 @@ def media(observable, K):
     for index in range(len(K)):
         aux = [K[index]]
         K_aux += [aux]
-    if libreria.mat_hermitani(observable):
-        vel = libreria.conjugar_matrix(K_aux)
-        ac = libreria.accion_matrix(observable, K_aux)
+    if libreria.mathermitiana(observable):
+        vel = libreria.conjumat(K_aux)
+        ac = libreria.accionmat(observable, K_aux)
         punto = libreria.val_ine(ac, vel)
         punto = (round(punto[0], 2), round(punto[1], 2))
         return punto
@@ -81,9 +81,9 @@ def probabilidades_vectores(inicial, observable, posicion):
     return amplitud(inicial, vectores[posicion])
 
 def dinamica(mat_u, v1, t):
-    if libreria.verifi_mat_unitary(mat_u):
+    if libreria.matunita(mat_u):
         for index in range(t):
-            v1 = libreria.accion_matrix(mat_u, v1)
+            v1 = libreria.accionmat(mat_u, v1)
         return v1
     else:
         return "Matriz no valida"
