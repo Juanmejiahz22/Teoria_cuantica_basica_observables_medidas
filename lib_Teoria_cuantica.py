@@ -87,3 +87,33 @@ def dinamica(mat_u, v1, t):
         return v1
     else:
         return "Matriz no valida"
+
+if __name__ == '__main__':
+    print("Ejercicio 4.3.1")
+    #Ejercicio 4.3.1
+    v = [[(1, 0)], [(0, 0)]]
+    observable = [[(0, 0), (1, 0)], [(1, 0), (0, 0)]]
+    vr = libreria.accionmat(observable, v)
+    ob = observable
+    observable = np.array(observable)
+    vectores = np.linalg.eig(observable)
+    print(vr)
+    print(vectores)
+
+    #Ejercicio 4.3.2
+    print("Ejercicio 4.3.2")
+    p1 = probabilidades_vectores(vr, ob, 1)
+    print(p1)
+
+    
+    #Excercise 4.4.1
+    print("Ejercicio 4.4.1")
+    vector_41 = [[(0, 0), (1, 0)], [(1, 0), (0, 0)]]
+    vector_42 = [[((2**(1/2))/2, 0), ((2**(1/2))/2, 0)], [((2**(1/2))/2, 0), (-(2**(1/2))/2, 0)]]
+    if matunita(vector_41) and matunita(vector_42):
+        print(matunita(libreria.m_mul(v1_4,v2_4)))
+
+    # Excercise 4.4.2
+    print("Excercise 4.4.2")
+    print(dinamica([[(0, 0), (1/(2**(1/2)), 0), (1/(2**(1/2)), 0), (0, 0)],[(1/(2**(1/2)), 0), (0, 0), (0, 0), (-1/(2**(1/2)), 0)],[(1 / (2 ** (1 / 2)), 0), (0, 0), (0, 0), (1 / (2 ** (1 / 2)), 0)],[(0, 0), (-1/(2**(1/2)), 0), (1/(2**(1/2)), 0), (0, 0)]],[(1,0), (0,0), (0,0), (0,0)], 3))
+    print(dinamica([[(0, 0), (1 / (2 ** (1 / 2)), 0), (1 / (2 ** (1 / 2)), 0), (0, 0)],[(0, 1 / (2 ** (1 / 2))), (0, 0), (0, 0), (1 / (2 ** (1 / 2)), 0)],[(1 / (2 ** (1 / 2)), 0), (0, 0), (0, 0), (0, 1 / (2 ** (1 / 2)))],[(0, 0), (1 / (2 ** (1 / 2)), 0), (-1 / (2 ** (1 / 2)), 0), (0, 0)]],[(1, 0), (0, 0), (0, 0), (0, 0)], 3))
